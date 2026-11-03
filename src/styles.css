@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --theme-base: #faf4ed;
+  --theme-surface: #fffaf3;
+  --theme-overlay: #f2e9e1;
+  --theme-muted: #9893a5;
+  --theme-subtle: #797593;
+  --theme-text: #575279;
+  --theme-love: #b4637a;
+  --theme-gold: #ea9d34;
+  --theme-foam: #56949f;
+  --theme-iris: #907aa9;
+  --theme-highlight-high: #cecacd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --theme-base: #191724;
+    --theme-surface: #1f1d2e;
+    --theme-overlay: #26233a;
+    --theme-muted: #6e6a86;
+    --theme-subtle: #908caa;
+    --theme-text: #e0def4;
+    --theme-love: #eb6f92;
+    --theme-gold: #f6c177;
+    --theme-foam: #9ccfd8;
+    --theme-iris: #c4a7e7;
+    --theme-highlight-high: #524f67;
+  }
+}
+
+@theme inline {
+  --font-mono: "IBM Plex Mono", monospace;
+  --color-base: var(--theme-base);
+  --color-surface: var(--theme-surface);
+  --color-overlay: var(--theme-overlay);
+  --color-muted: var(--theme-muted);
+  --color-subtle: var(--theme-subtle);
+  --color-text: var(--theme-text);
+  --color-love: var(--theme-love);
+  --color-gold: var(--theme-gold);
+  --color-foam: var(--theme-foam);
+  --color-iris: var(--theme-iris);
+  --color-highlight-high: var(--theme-highlight-high);
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  min-height: 100%;
+}
+body {
+  margin: 0;
+}
+a,
+button {
+  cursor: pointer;
+}

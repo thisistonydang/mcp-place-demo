@@ -1,0 +1,81 @@
+{
+  "id": "1ae0bf65-e8e7-4888-a60f-5b402ca2a068",
+  "prevId": "0a08d262-265e-4948-8671-a31a507ab098",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.canvas_squares": {
+      "name": "canvas_squares",
+      "schema": "",
+      "columns": {
+        "x": {
+          "name": "x",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "y": {
+          "name": "y",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "canvas_color",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'white'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "canvas_squares_x_y_pk": {
+          "name": "canvas_squares_x_y_pk",
+          "columns": ["x", "y"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "canvas_squares_valid_x": {
+          "name": "canvas_squares_valid_x",
+          "value": "\"canvas_squares\".\"x\" between 1 and 5"
+        },
+        "canvas_squares_valid_y": {
+          "name": "canvas_squares_valid_y",
+          "value": "\"canvas_squares\".\"y\" between 1 and 5"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.canvas_color": {
+      "name": "canvas_color",
+      "schema": "public",
+      "values": [
+        "white",
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "purple",
+        "black"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

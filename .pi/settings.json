@@ -1,0 +1,11 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "quietStartup": true,
+  "packages": [
+    {
+      "source": "npm:pi-powerline-footer",
+      "autoload": false,
+      "extensions": ["-index.ts"]
+    }
+  ]
+}
