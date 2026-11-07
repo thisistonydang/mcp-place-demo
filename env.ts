@@ -24,6 +24,7 @@ const allowedOrigins = z
   .pipe(z.array(z.union([z.literal("*"), z.url()])).min(1));
 
 const clientEnvSchema = z.object({
+  VITE_NEON_AUTH_URL: z.url(),
   VITE_NEON_FUNCTION_API_BASE_URL: z.url(),
   VITE_NEON_REALTIME_URL: z.url(),
 });

@@ -13,6 +13,7 @@ import { createRoot } from "react-dom/client";
 import { Navbar } from "#/components/navbar";
 import { realtimeClient } from "#/lib/realtime";
 import { Home } from "#/routes/home";
+import { Signup } from "#/routes/signup";
 import "#/styles.css";
 
 const rootRoute = createRootRoute({
@@ -40,7 +41,12 @@ const indexRoute = createRoute({
   path: "/",
   component: Home,
 });
-const routeTree = rootRoute.addChildren([indexRoute]);
+const signupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/signup",
+  component: Signup,
+});
+const routeTree = rootRoute.addChildren([indexRoute, signupRoute]);
 const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 declare module "@tanstack/react-router" {

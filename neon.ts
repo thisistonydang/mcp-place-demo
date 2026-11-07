@@ -5,6 +5,7 @@ import { readNeonConfigEnv } from "./env";
 const { APP_ALLOWED_ORIGINS, NEON_REALTIME_SECRET } = readNeonConfigEnv();
 
 export default defineConfig({
+  auth: true,
   functions: {
     api: {
       name: "Canvas API",
