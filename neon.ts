@@ -2,7 +2,8 @@ import { defineConfig } from "@neon/config/v1";
 
 import { readNeonConfigEnv } from "./env";
 
-const { APP_ALLOWED_ORIGINS, NEON_REALTIME_SECRET } = readNeonConfigEnv();
+const { APP_ALLOWED_ORIGINS, MCP_RESOURCE, NEON_REALTIME_SECRET } =
+  readNeonConfigEnv();
 
 export default defineConfig({
   auth: true,
@@ -12,6 +13,13 @@ export default defineConfig({
       source: "functions/api/index.ts",
       env: {
         NEON_REALTIME_SECRET,
+      },
+    },
+    mcp: {
+      name: "Canvas MCP Server",
+      source: "functions/mcp/index.ts",
+      env: {
+        MCP_RESOURCE,
       },
     },
   },

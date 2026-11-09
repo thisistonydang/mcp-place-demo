@@ -12,6 +12,8 @@ import { createRoot } from "react-dom/client";
 
 import { Navbar } from "#/components/navbar";
 import { realtimeClient } from "#/lib/realtime";
+import { AuthConsent } from "#/routes/auth-consent";
+import { AuthSignIn } from "#/routes/auth-sign-in";
 import { Home } from "#/routes/home";
 import { Signup } from "#/routes/signup";
 import "#/styles.css";
@@ -46,7 +48,22 @@ const signupRoute = createRoute({
   path: "/signup",
   component: Signup,
 });
-const routeTree = rootRoute.addChildren([indexRoute, signupRoute]);
+const authSignInRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/auth/sign-in",
+  component: AuthSignIn,
+});
+const authConsentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/auth/consent",
+  component: AuthConsent,
+});
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  signupRoute,
+  authSignInRoute,
+  authConsentRoute,
+]);
 const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 declare module "@tanstack/react-router" {

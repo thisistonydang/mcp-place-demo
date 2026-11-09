@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 
-import { authClient } from "#/lib/auth";
+import { authClient, authReactClient, oauthClient } from "#/lib/auth";
 
 export function Signup() {
-  const session = authClient.useSession();
+  const session = authReactClient.useSession();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,6 +25,15 @@ export function Signup() {
 
       await session.refetch();
       setPassword("");
+
+      if (new URLSearchParams(window.location.search).has("client_id")) {
+        const next = await oauthClient.oauth2.continue({ selected: true });
+        if (next.error) {
+          setError(
+            "This sign-in link expired. Return to the agent and try again.",
+          );
+        }
+      }
     } catch {
       setError("Could not create your account. Please try again.");
     } finally {

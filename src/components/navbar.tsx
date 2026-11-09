@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 
-import { authClient } from "#/lib/auth";
+import { authReactClient } from "#/lib/auth";
 
 export function Navbar() {
-  const session = authClient.useSession();
+  const session = authReactClient.useSession();
 
   return (
     <header>
@@ -35,7 +35,7 @@ export function Navbar() {
             </span>
             <button
               className="rounded-lg border border-overlay px-3 py-2 font-bold hover:border-love hover:text-love"
-              onClick={() => void authClient.signOut()}
+              onClick={() => void authReactClient.signOut()}
               type="button"
             >
               Sign out

@@ -5,4 +5,9 @@ import { defineConfig } from "vite";
 export default defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [tailwindcss(), react()],
+  server: {
+    headers: {
+      "Content-Security-Policy": "frame-ancestors 'none'",
+    },
+  },
 });

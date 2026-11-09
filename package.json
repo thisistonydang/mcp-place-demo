@@ -14,10 +14,12 @@
     "check": "prettier --check . && eslint . && vitest run && tsc --noEmit"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@neon/auth": "^0.8.2",
     "@neon/config": "^1.9.3",
     "@neon/env": "^1.6.4",
     "@neon/functions": "^0.11.0",
+    "@neon/oauth": "^0.3.0",
     "@neon/realtime": "^0.1.2",
     "@neon/realtime-drizzle": "^0.1.0",
     "@neon/realtime-react": "^0.1.1",

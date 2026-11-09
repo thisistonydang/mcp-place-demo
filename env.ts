@@ -34,12 +34,19 @@ const functionEnvSchema = z.object({
   NEON_REALTIME_SECRET: z.string().min(1),
 });
 
+const mcpFunctionEnvSchema = z.object({
+  DATABASE_URL: z.url(),
+  MCP_RESOURCE: z.url(),
+  NEON_AUTH_BASE_URL: z.url(),
+});
+
 const migrationEnvSchema = z.object({
   DATABASE_URL_UNPOOLED: z.url(),
 });
 
 const neonConfigEnvSchema = z.object({
   APP_ALLOWED_ORIGINS: allowedOrigins,
+  MCP_RESOURCE: z.url(),
   NEON_REALTIME_SECRET: z.string().min(1),
 });
 
@@ -49,6 +56,10 @@ export function readClientEnv() {
 
 export function readFunctionEnv() {
   return parseEnv(functionEnvSchema, process.env);
+}
+
+export function readMcpFunctionEnv() {
+  return parseEnv(mcpFunctionEnvSchema, process.env);
 }
 
 export function readMigrationEnv() {
