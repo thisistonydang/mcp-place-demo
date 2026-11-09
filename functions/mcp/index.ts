@@ -65,15 +65,22 @@ function createServer(userId: string) {
       title: "Paint a square",
       description: "Paint one square on the shared 5 by 5 mcp/place grid.",
       inputSchema: {
-        color: z.enum(canvasColors).describe("The new square color."),
+        color: z
+          .enum(canvasColors, {
+            error:
+              "color must be white, red, orange, yellow, green, blue, purple, or black.",
+          })
+          .describe("The new square color."),
         x: z
-          .enum(["A", "B", "C", "D", "E"])
+          .enum(["A", "B", "C", "D", "E"], {
+            error: "x must be a grid column from A through E.",
+          })
           .describe("Grid column from A through E."),
         y: z
-          .number()
-          .int()
-          .min(1)
-          .max(5)
+          .number({ error: "y must be a number from 1 through 5." })
+          .int({ error: "y must be an integer from 1 through 5." })
+          .min(1, { error: "y must be at least 1." })
+          .max(5, { error: "y must be at most 5." })
           .describe("Grid row from 1 through 5."),
       },
     },
