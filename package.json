@@ -26,7 +26,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-router": "latest",
     "drizzle-orm": "^0.45.4",
-    "hono": "^4.13.13",
+    "hono": "^4.13.16",
     "pg": "^8.23.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
