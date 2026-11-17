@@ -64,6 +64,12 @@ function createServer(userId: string) {
     {
       title: "Paint a square",
       description: "Paint one square on the shared 5 by 5 mcp/place grid.",
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: {
         color: z
           .enum(canvasColors, {
