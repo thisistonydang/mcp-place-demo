@@ -6,7 +6,7 @@ This repo goes with the guide [Build an MCP server for your app with Neon Functi
 
 ## What you need
 
-- A [Neon account](https://console.neon.tech/signup) and a project in AWS US East (Ohio), AWS US East (N. Virginia), AWS Europe (Frankfurt), or AWS Asia Pacific (Singapore)
+- A [Neon account](https://console.neon.tech/signup) and a project that runs Postgres 18 in AWS US East (Ohio), AWS US East (N. Virginia), AWS Europe (Frankfurt), or AWS Asia Pacific (Singapore). [Neon Realtime](https://neon.com/docs/realtime/overview) needs both.
 - The [Neon CLI](https://neon.com/docs/cli/install), signed in with `neon login`
 - Node.js and pnpm
 
@@ -27,7 +27,7 @@ These steps set up the full app on your own Neon project: the canvas, sign-in, a
 
    ```bash
    neon realtime enable
-   neon env pull -e NEON_REALTIME_SECRET
+   neon env pull -e NEON_REALTIME_SECRET --file .env.local
    ```
 
 3. Add two more variables to `.env.local`:
@@ -102,7 +102,7 @@ To check the server from the command line, call it without a token. It should an
 curl -i <MCP_RESOURCE>
 ```
 
-Remote clients such as ChatGPT can't complete sign-in against `localhost`. To use them, deploy the frontend to a public HTTPS origin, such as Vercel, with the three `VITE_` variables set. Then point Managed Better Auth at it:
+Remote clients such as ChatGPT can't complete sign-in against `localhost`. To use them, deploy the frontend to a public HTTPS origin, such as Vercel. Set the three `VITE_` variables in the Vercel project before you deploy, because Vite adds them at build time. If you set them later, redeploy. Then point Managed Better Auth at it:
 
 ```bash
 neon neon-auth domain add https://<your-app>.vercel.app
