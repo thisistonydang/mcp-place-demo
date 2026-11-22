@@ -21,88 +21,88 @@ These steps set up the full app on your own Neon project: the canvas, sign-in, a
    neon link --project-id <project_id>
    ```
 
-2. Turn on Neon Realtime for the branch:
+   `neon link` warns that `neon.ts` is missing `APP_ALLOWED_ORIGINS`, `MCP_RESOURCE`, and `NEON_REALTIME_SECRET`. That's expected. The link still works, and the next steps set those variables.
+
+2. Turn on Neon Realtime for the branch, then write its secret to `.env.local`:
 
    ```bash
    neon realtime enable
+   neon env pull -e NEON_REALTIME_SECRET
    ```
 
-3. `neon.ts` reads three variables when it loads. Neon commands such as `neon env pull` and `neon deploy` fail until they're set. Export them in your shell:
+3. Add two more variables to `.env.local`:
 
-   ```bash
-   export NEON_REALTIME_SECRET=<realtime_secret>
-   export APP_ALLOWED_ORIGINS=http://localhost:3000
-   export MCP_RESOURCE=https://example.com/mcp
+   ```env
+   APP_ALLOWED_ORIGINS=http://localhost:3000
+   MCP_RESOURCE=https://example.com/mcp
    ```
 
-   - `NEON_REALTIME_SECRET`: in the Neon Console, open the branch's **Realtime** page and click **Copy secret**.
    - `APP_ALLOWED_ORIGINS`: the web origins that can subscribe to Realtime. Separate several origins with commas.
-   - `MCP_RESOURCE`: the MCP function's own URL, ending in `/mcp`. You only get that URL after the first deploy, so use the placeholder for now. Step 6 replaces it.
+   - `MCP_RESOURCE`: the MCP function's own URL, ending in `/mcp`. You only get that URL after the first deploy, so use the placeholder for now. Step 5 replaces it.
 
-   These exports only last for the current shell. Run them again in a new terminal.
+   `neon.ts` reads these variables and `NEON_REALTIME_SECRET` when it loads, so pass `--env .env.local` to `neon deploy`.
 
-4. Write the branch's connection details to `.env.local`, then create the `canvas_squares` table with its 25 rows:
+4. Deploy to Neon, then create the `canvas_squares` table with its 25 rows:
 
    ```bash
-   neon env pull
+   neon deploy -y --env .env.local
    pnpm db:migrate
    ```
 
-5. Deploy to Neon. This turns on Managed Better Auth and deploys the `api` and `mcp` functions:
+   The deploy turns on Managed Better Auth, deploys the `api` and `mcp` functions, prints their URLs, and writes the branch's connection details to `.env.local`.
 
-   ```bash
-   neon deploy -y
+5. In `.env.local`, set `MCP_RESOURCE` to the `mcp` function URL from the deploy output with `mcp` added to the end, then deploy again:
+
+   ```env
+   MCP_RESOURCE=https://<branch_id>-mcp.compute.<cell>.aws.neon.tech/mcp
    ```
 
-6. Get the MCP function's URL, then deploy again with the real `MCP_RESOURCE`:
-
    ```bash
-   neon functions get mcp
-   export MCP_RESOURCE=https://<branch_id>-mcp.compute.<cell>.aws.neon.tech/mcp
-   neon deploy -y
+   neon deploy -y --env .env.local
    ```
 
-   Use the URL from `neon functions get mcp` with `/mcp` added to the end.
+   The new deployment can take a few minutes to replace the old one. Until then, some requests still use the placeholder URL.
 
-7. Add the frontend variables to `.env.local`:
+6. Add the frontend variables to `.env.local`:
 
    ```env
    VITE_NEON_AUTH_URL=<NEON_AUTH_BASE_URL from .env.local>
-   VITE_NEON_FUNCTION_API_BASE_URL=<api function URL from neon functions get api>
+   VITE_NEON_FUNCTION_API_BASE_URL=<api function URL from the deploy output>
    VITE_NEON_REALTIME_URL=<NEON_REALTIME_URL from .env.local>
    ```
 
-8. Turn on the OAuth server and point it at the local sign-in and consent pages:
+7. Turn on the OAuth server and point it at the local sign-in and consent pages. Use your `MCP_RESOURCE` value:
 
    ```bash
    neon neon-auth config oauth-server update --enabled \
      --login-page http://localhost:3000/auth/sign-in \
      --consent-page http://localhost:3000/auth/consent \
-     --mcp-resource "$MCP_RESOURCE" \
-     --mcp-client-id-metadata-documents
+     --mcp-resource <MCP_RESOURCE>
    ```
 
-9. Start the app and open `http://localhost:3000`:
+8. Start the app and open `http://localhost:3000`:
 
    ```bash
    pnpm dev
    ```
 
+   The app must run on port 3000, because the OAuth pages and `APP_ALLOWED_ORIGINS` use it. If another app has port 3000, Vite picks the next free port, and sign-in and live updates stop working. Stop the other app first.
+
 To check that the canvas works, change a square in the Neon SQL Editor (see [Change a square](#change-a-square)) and watch it change in the browser.
 
 ## Connect to the MCP server
 
-Connect an MCP client to the URL in `MCP_RESOURCE`. It ends in `/mcp`. The server exposes one tool, `paint_square`.
+Connect an MCP client to your `MCP_RESOURCE` URL. It ends in `/mcp`. The server exposes one tool, `paint_square`.
 
-When the client connects, it opens the sign-in and consent pages, so keep `pnpm dev` running. Create an account at `http://localhost:3000/signup` first if you don't have one.
+When the client connects, it opens the sign-in and consent pages, so keep `pnpm dev` running. You can create an account from the sign-in page, or at `http://localhost:3000/signup`.
 
 To check the server from the command line, call it without a token. It should answer `401` with a `WWW-Authenticate` header:
 
 ```bash
-curl -i "$MCP_RESOURCE"
+curl -i <MCP_RESOURCE>
 ```
 
-Remote clients such as ChatGPT can't complete sign-in against `localhost`. To use them, deploy the frontend to a public HTTPS origin, such as Vercel, and point Managed Better Auth at it:
+Remote clients such as ChatGPT can't complete sign-in against `localhost`. To use them, deploy the frontend to a public HTTPS origin, such as Vercel, with the three `VITE_` variables set. Then point Managed Better Auth at it:
 
 ```bash
 neon neon-auth domain add https://<your-app>.vercel.app
@@ -112,7 +112,9 @@ neon neon-auth config oauth-server update \
   --consent-page https://<your-app>.vercel.app/auth/consent
 ```
 
-Set the three `VITE_` variables in your Vercel project too. See the [guide](https://neon.com/guides/mcp-server-neon-functions) for testing with MCPJam and Manufact and connecting ChatGPT.
+To update the grid live on that origin, add it to `APP_ALLOWED_ORIGINS`, for example `http://localhost:3000,https://<your-app>.vercel.app`, and run `neon deploy -y --env .env.local` again.
+
+See the [guide](https://neon.com/guides/mcp-server-neon-functions) for testing with MCPJam and Manufact and connecting ChatGPT.
 
 ## Change a square
 
